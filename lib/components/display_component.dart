@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:finale/components/image_component.dart';
 import 'package:finale/components/loading_component.dart';
-import 'package:finale/lastfm.dart';
 import 'package:finale/types/generic.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +9,8 @@ enum DisplayType { list, grid }
 
 class DisplayComponent<T extends Displayable> extends StatefulWidget {
   final List<T> items;
-  final PagedLastfmRequest<T> request;
-  final Stream<PagedLastfmRequest<T>> requestStream;
+  final PagedRequest<T> request;
+  final Stream<PagedRequest<T>> requestStream;
 
   final void Function(T item) secondaryAction;
 
@@ -39,7 +38,7 @@ class DisplayComponent<T extends Displayable> extends StatefulWidget {
 }
 
 class _DisplayComponentState<T extends Displayable>
-    extends State<DisplayComponent> with AutomaticKeepAliveClientMixin {
+    extends State<DisplayComponent<T>> with AutomaticKeepAliveClientMixin {
   var items = List<T>();
   int page = 1;
   String period = '7day';
@@ -48,7 +47,7 @@ class _DisplayComponentState<T extends Displayable>
 
   final _scrollController = ScrollController();
 
-  PagedLastfmRequest<T> _request;
+  PagedRequest<T> _request;
   StreamSubscription _subscription;
 
   @override

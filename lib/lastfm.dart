@@ -19,14 +19,14 @@ final _client = ThrottleClient(10);
 Uri _buildUri(String method, Map<String, dynamic> data) {
   final allData = {
     ...data.map((key, value) => MapEntry(key, value.toString())),
-    'api_key': apiKey,
+    'api_key': Env.lastfm.apiKey,
     'method': method,
   };
 
   final hash = (allData.keys.toList()..sort())
           .map((key) => '$key${allData[key]}')
           .join() +
-      apiSecret;
+      Env.lastfm.apiSecret;
   final signature = md5.convert(utf8.encode(hash));
   allData['api_sig'] = signature.toString();
   allData['format'] = 'json';
@@ -57,9 +57,12 @@ Future<Map<String, dynamic>> _doRequest(
   }
 }
 
-abstract class PagedLastfmRequest<T> {
-  Future<List<T>> doRequest(int limit, int page, {String period});
-}
+//abstract class PagedLastfmRequest<T> {
+//  Future<List<T>> doRequest(int limit, int page, {String period});
+//}
+
+abstract class PagedLastfmRequest<T extends Displayable>
+    extends PagedRequest<T> {}
 
 class GetRecentTracksRequest
     extends PagedLastfmRequest<LRecentTracksResponseTrack> {
@@ -217,7 +220,11 @@ class ArtistGetTopTracksRequest extends PagedLastfmRequest<LArtistTopTrack> {
   }
 }
 
-class Lastfm {
+class Lastfm extends SearchEngine {
+  Lastfm._();
+  static final _instance = Lastfm._();
+  static Lastfm getInstance() => _instance;
+
   static Future<Response> get(String url) => _client.get(url);
 
   static Future<LAuthenticationResponseSession> authenticate(
@@ -320,6 +327,18 @@ class Lastfm {
         },
         verb: RequestVerb.post);
     return true;
+  }
+
+  @override
+  PagedRequest<LTrackMatch> searchTracks(String query) {
+//    return (int limit, int page, {String period}) async {
+//      final rawResponse = await _doRequest(
+//          'track.search', {'track': query, 'limit': limit, 'page': page});
+//      return LTrackSearchResponse.fromJson(
+//              rawResponse['results']['trackmatches'])
+//          .tracks;
+//    };
+    return SearchTracksRequest(query);
   }
 }
 

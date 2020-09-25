@@ -14,7 +14,7 @@ class LoginView extends StatelessWidget {
   void _logIn(BuildContext context) async {
     final result = await FlutterWebAuth.authenticate(
         url: Uri.https('last.fm', 'api/auth',
-            {'api_key': apiKey, 'cb': 'finale://auth'}).toString(),
+            {'api_key': Env.lastfm.apiKey, 'cb': 'finale://auth'}).toString(),
         callbackUrlScheme: 'finale');
     final token = Uri.parse(result).queryParameters['token'];
     final session = await Lastfm.authenticate(token);

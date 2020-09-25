@@ -34,8 +34,8 @@ class _ScrobbleViewState extends State<ScrobbleView> {
     _albumController.text = widget.track?.album?.name;
 
     if (!widget.isModal) {
-      ACRCloud.setUp(ACRCloudConfig(
-          acrCloudAccessKey, acrCloudAccessSecret, acrCloudHost));
+      ACRCloud.setUp(ACRCloudConfig(Env.acrCloud.accessKey,
+          Env.acrCloud.accessSecret, Env.acrCloud.host));
     }
   }
 

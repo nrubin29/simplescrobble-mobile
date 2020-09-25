@@ -110,12 +110,18 @@ abstract class BasicScrobbleableTrack extends BasicTrack {
   int get duration;
 }
 
-abstract class FullTrack {
+abstract class FullTrack extends Displayable {
+  DisplayableType get type => DisplayableType.track;
+
   String get name;
 
   BasicArtist get artist;
 
   BasicAlbum get album;
+
+  String get url;
+
+  String get displayTitle => name;
 }
 
 abstract class BasicAlbum extends Displayable {
@@ -195,3 +201,13 @@ abstract class BasicScrobbledArtist extends BasicArtist {
 }
 
 abstract class FullArtist extends BasicArtist {}
+
+//typedef Future<List<T>> PagedRequest<T>(int limit, int page, {String period});
+
+abstract class PagedRequest<T extends Displayable> {
+  Future<List<T>> doRequest(int limit, int page, {String period});
+}
+
+abstract class SearchEngine {
+  PagedRequest<BasicTrack> searchTracks(String query);
+}
